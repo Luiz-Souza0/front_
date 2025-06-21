@@ -13,7 +13,7 @@ const Header = () => {
         <button onClick={() => navigate('/')}>Inicio</button>
         <button onClick={() => navigate('/prechaves')}>Pré Chaves</button>
         <button onClick={() => navigate('/poschaves')}>Pós Chaves</button>
-        <button onClick={() => navigate('/parc')}>Parcelas</button>
+        <button onClick={() => navigate('/Parcela')}>Parcelas</button>
         <button onClick={() => navigate('/SegObra')}>Seguro Obra</button>
       </nav>
     </header>

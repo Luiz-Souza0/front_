@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Pos from './components/PosChaves';
-import Pre from './components/PreChaves';
+import Pos from './components/posComponents/PosChaves';
+import Pre from './components/preComponents/PreChaves';
+import SegObra from './components/preComponents/SegObra';
+import Parc from './components/posComponents/Parcelas';
 import Header from './components/Header';
 import './App.css';
 import api from '../API/api'; // Importando a instância do axios configurada
@@ -46,7 +48,7 @@ const [isLogged, isLoggedData] = useState([]);
                 <div>
                   <img src="img_avatar2.png" alt="Avatar" />
                 </div>
-            
+             
                 <div >
                   <label htmlFor="name"><b>Username</b></label>
                   <input type="text" placeholder="Enter Username" name="name"  value={username}
@@ -67,6 +69,8 @@ const [isLogged, isLoggedData] = useState([]);
         <Routes>
         <Route path="/poschaves" element={<Pos />} />
         <Route path="/prechaves" element={<Pre />} />
+        <Route path="/Parcela" element={<Parc />} />
+        <Route path="/SegObra" element={<SegObra />} />
         {/* <Route path="/outra" element={<OutraPagina />} />         */}
         </Routes>
   )

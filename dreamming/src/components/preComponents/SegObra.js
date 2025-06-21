@@ -1,7 +1,7 @@
 // src/components/Parc.js
 import React, { useState, useEffect } from 'react';
-import api from '../API/api'; // Importando a instância do axios configurada
-import './PreChaves.css';
+import api from '../../API/api'; // Importando a instância do axios configurada
+import './SegObra.css';
 
 const Parc = () => {
   const [dados, setDados] = useState([]);
@@ -13,7 +13,7 @@ const Parc = () => {
   // Carregar dados da API ao inicializar
   useEffect(() => {
     api
-      .get('/prechaves')
+      .get('/SegObra')
       .then((response) => {
         setDados(response.data);
       })
@@ -57,7 +57,7 @@ const Parc = () => {
     };
 
     api
-      .post('/prechaves', novaLinha)
+      .post('/SegObra', novaLinha)
       .then((response) => {
         setDados([...dados, response.data]);
         setCompetencia('');
@@ -88,7 +88,7 @@ const Parc = () => {
 
   const deletarLinha = (competencia) => {
     api
-      .delete(`/prechaves/${competencia}`)
+      .delete(`/SegObra/${competencia}`)
       .then(() => {
         setDados(dados.filter(item => item.competencia !== competencia));
       })
@@ -104,7 +104,7 @@ const Parc = () => {
     setDados(novosDados);
 
     api
-      .put(`/prechaves/${novosDados[index].competencia}`, { checked: novosDados[index].checked })
+      .put(`/SegObra/${novosDados[index].competencia}`, { checked: novosDados[index].checked })
       .catch((error) => {
         console.error('Erro ao atualizar o checkbox:', error);
       });
