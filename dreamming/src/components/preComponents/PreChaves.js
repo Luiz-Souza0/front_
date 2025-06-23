@@ -1,6 +1,6 @@
 // src/components/Parc.js
 import React, { useState, useEffect } from 'react';
-import api from '../../API/api'; // Importando a instância do axios configurada
+import api from '../../API/api';
 import './PreChaves.css';
 
 const Parc = () => {
@@ -8,9 +8,9 @@ const Parc = () => {
   const [competencia, setCompetencia] = useState('');
   const [valor, setValor] = useState('');
   const [checked, setChecked] = useState(false);
-  const [anoSelecionado, setAnoSelecionado] = useState('todos'); // filtro
+  const [guardado, setGuardado] = useState(false);
+  const [anoSelecionado, setAnoSelecionado] = useState('todos');
 
-  // Carregar dados da API ao inicializar
   useEffect(() => {
     api
       .get('/prechaves')
@@ -25,16 +25,11 @@ const Parc = () => {
   const formatarValor = (valor) => {
     const num = valor.replace(/\D/g, '');
     if (!num) return '';
-  
     const inteiro = num.slice(0, -2) || '0';
     const decimal = num.slice(-2);
-    // return `${parseInt(inteiro, 10)},${decimal}`;
     return `${parseInt(inteiro, 10)},${decimal.padEnd(2, '0')}`;
-
   };
-  
 
-  // Função para formatar competência (MM/YYYY)
   const formatarCompetencia = (valor) => {
     valor = valor.replace(/\D/g, '');
     if (valor.length > 2) {
@@ -43,7 +38,6 @@ const Parc = () => {
     return valor.slice(0, 7);
   };
 
-  // Função para adicionar uma nova linha
   const adicionarLinha = () => {
     if (!competencia || !valor) {
       alert('Preencha competência e valor.');
@@ -54,6 +48,7 @@ const Parc = () => {
       competencia,
       valor,
       checked,
+      guardado,
     };
 
     api
@@ -63,18 +58,17 @@ const Parc = () => {
         setCompetencia('');
         setValor('');
         setChecked(false);
+        setGuardado(false);
       })
       .catch((error) => {
         console.error('Erro ao adicionar dados:', error);
       });
   };
 
-  // Função para tratar a alteração do valor
   const handleValorChange = (e) => {
     setValor(formatarValor(e.target.value));
   };
 
-  // Função para tratar a alteração da competência
   const handleCompetenciaChange = (e) => {
     setCompetencia(formatarCompetencia(e.target.value));
   };
@@ -97,22 +91,37 @@ const Parc = () => {
       });
   };
 
-  // Função para tratar a alteração do checkbox
   const handleCheckboxChange = (index) => {
     const novosDados = [...dados];
     novosDados[index].checked = !novosDados[index].checked;
     setDados(novosDados);
 
     api
-      .put(`/prechaves/${novosDados[index].competencia}`, { checked: novosDados[index].checked })
+      .put(`/prechaves/${novosDados[index].competencia}`, {
+        checked: novosDados[index].checked,
+      })
       .catch((error) => {
         console.error('Erro ao atualizar o checkbox:', error);
       });
   };
 
+  const handleGuardadoChange = (index) => {
+    const novosDados = [...dados];
+    novosDados[index].guardado = !novosDados[index].guardado;
+    setDados(novosDados);
+
+    api
+      .put(`/prechaves/${novosDados[index].competencia}`, {
+        guardado: novosDados[index].guardado,
+      })
+      .catch((error) => {
+        console.error('Erro ao atualizar o checkbox de guardado:', error);
+      });
+  };
+
   return (
     <div className="container">
-      <h2>Tabela de Valores do Pós Chaves</h2>
+      <h2 style={{ color: 'gray' }}> Tabela de Valores do Pré Chaves</h2>
 
       <div className="input-section">
         <input
@@ -136,8 +145,17 @@ const Parc = () => {
           />
           Marcar
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={guardado}
+            onChange={() => setGuardado(!guardado)}
+          />
+          Guardado?
+        </label>
         <button onClick={adicionarLinha}>Adicionar</button>
       </div>
+
       <div style={{ marginBottom: '16px', textAlign: 'center' }}>
         <label style={{ marginRight: '8px' }}>Filtrar por ano:</label>
         <select
@@ -160,6 +178,7 @@ const Parc = () => {
             <th>Competência</th>
             <th>Valor</th>
             <th>Pago?</th>
+            <th>Guardado?</th>
             <th>Remover</th>
           </tr>
         </thead>
@@ -180,7 +199,13 @@ const Parc = () => {
                   onChange={() => handleCheckboxChange(index)}
                 />
               </td>
-
+              <td>
+                <input
+                  type="checkbox"
+                  checked={item.guardado || false}
+                  onChange={() => handleGuardadoChange(index)}
+                />
+              </td>
               <td>
                 <button
                   style={{
